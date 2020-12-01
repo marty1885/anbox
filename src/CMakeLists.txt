@@ -409,6 +409,8 @@ target_link_libraries(anbox-core
   OpenglCodecCommon
   anbox-protobuf
   sdbus-c++
+  wayland-egl
+  wayland-client
   xdg)
 
 link_directories(${CMAKE_CURRENT_BINARY_DIR}/../external/sdbus-cpp/src/sdbus-cpp-build/)

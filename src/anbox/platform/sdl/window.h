@@ -71,6 +71,7 @@ class Window : public std::enable_shared_from_this<Window>, public wm::Window {
   EGLNativeDisplayType native_display_;
   EGLNativeWindowType native_window_;
   SDL_Window *window_;
+  bool on_wayland_ = false;
 };
 }
 #endif

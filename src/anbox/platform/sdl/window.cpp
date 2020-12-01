@@ -26,6 +26,10 @@
 #include <mir_toolkit/mir_client_library.h>
 #endif
 
+#if defined(WAYLAND_SUPPORT)
+#include <wayland-egl.h>
+#endif
+
 namespace {
 constexpr const int window_resize_border{10};
 constexpr const int top_drag_area{42};
@@ -93,7 +97,10 @@ Window::Window(const std::shared_ptr<Renderer> &renderer,
 #if defined(WAYLAND_SUPPORT)
     case SDL_SYSWM_WAYLAND:
       native_display_ = reinterpret_cast<EGLNativeDisplayType>(info.info.wl.display);
-      native_window_ = reinterpret_cast<EGLNativeWindowType>(info.info.wl.surface);
+      native_window_ = reinterpret_cast<EGLNativeWindowType>(wl_egl_window_create(info.info.wl.surface, frame.width(), frame.height()));
+      on_wayland_ = true;
+      // TODO: Set window->driverdate->egl_window = native_window_ so SDL handles resizing the surface for us.
+      // Otherwise I don't see a way to resize EGL. But SDL_Window is an incomplete type. 
       break;
 #endif
 #if defined(MIR_SUPPORT)
@@ -113,6 +120,12 @@ Window::Window(const std::shared_ptr<Renderer> &renderer,
 }
 
 Window::~Window() {
+
+#if defined(WAYLAND_SUPPORT)
+  if(on_wayland_)
+    wl_egl_window_destroy(reinterpret_cast<wl_egl_window*>(native_window_));
+#endif
+
   if (window_) SDL_DestroyWindow(window_);
 }
 
