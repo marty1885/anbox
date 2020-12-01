@@ -306,6 +306,7 @@ RendererWindow *Renderer::createNativeWindow(
   window->surface = s_egl.eglCreateWindowSurface(
       m_eglDisplay, m_eglConfig, window->native_window, nullptr);
   if (window->surface == EGL_NO_SURFACE) {
+    ERROR("Failed to create EGL surface for window. error=0x%x", s_egl.eglGetError());
     delete window;
     m_lock.unlock();
     return nullptr;
