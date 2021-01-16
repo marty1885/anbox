@@ -84,6 +84,7 @@ endif()
 
 option(ENABLE_WAYLAND "Enable wayland support" ON)
 if (ENABLE_WAYLAND)
+  pkg_check_modules(WAYLAND_EGL wayland-egl REQUIRED)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWAYLAND_SUPPORT")
 endif()
 

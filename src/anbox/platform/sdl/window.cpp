@@ -22,6 +22,10 @@
 
 #include <boost/throw_exception.hpp>
 
+#if defined(WAYLAND_SUPPORT)
+#include <wayland-egl.h>
+#endif
+
 #if defined(MIR_SUPPORT)
 #include <mir_toolkit/mir_client_library.h>
 #endif
@@ -93,7 +97,7 @@ Window::Window(const std::shared_ptr<Renderer> &renderer,
 #if defined(WAYLAND_SUPPORT)
     case SDL_SYSWM_WAYLAND:
       native_display_ = reinterpret_cast<EGLNativeDisplayType>(info.info.wl.display);
-      native_window_ = reinterpret_cast<EGLNativeWindowType>(info.info.wl.surface);
+      native_window_ = reinterpret_cast<EGLNativeWindowType>(wl_egl_window_create(info.info.wl.surface, frame.width(), frame.height()));
       break;
 #endif
 #if defined(MIR_SUPPORT)
